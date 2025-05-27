@@ -137,12 +137,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(in-package #:lisp-critic)
+(in-package #:pro-lisp-critic)
 
 
 ;;; Should add:
 ;;;   Catch (format t "..." arg) where "..." takes no arguments
 ;;;   Catch all nested conditional combinations between IF and COND
+
+(define-lisp-pattern required-docstring
+    (defun (?) (?not (?is stringp)) (?*))
+  "A docstring is required for this function.")
 
 (define-lisp-pattern copy-array
     (copy-array (?))
@@ -347,7 +351,7 @@ If the return value doesn't matter, use WHEN or UNLESS.")
   "You never need a PROGN at the start of the body of a ~S" (? FN))
 
 (define-lisp-pattern progn-single-form
-  (progn (?))
+    (defun (?) (?) (?contains progn))
   "Why do you think you need a PROGN?")
 
 (define-lisp-pattern setf-push

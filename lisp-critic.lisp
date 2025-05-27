@@ -99,7 +99,7 @@ forgot the USE-PACKAGE. Do this to fix things:
 
 |#
 
-(cl:defpackage #:lisp-critic
+(cl:defpackage #:pro-lisp-critic
   (:use  #:common-lisp #:tables #:extend-match #:write-wrap)
   (:import-from #:extend-match #:match-and)
   (:export #:critique #:critique-file #:critique-definition
@@ -111,7 +111,7 @@ forgot the USE-PACKAGE. Do this to fix things:
            #:clear-critique-db)
   )
 
-(in-package #:lisp-critic)
+(in-package #:pro-lisp-critic)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global variables and tables
