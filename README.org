@@ -1,5 +1,13 @@
-* LISP-CRITIC - A Lisp code critiquing package.
+* PRO-LISP-CRITIC - A Lisp code critiquing package designed for professional use.
 
+This is an ongoing project to develop Lisp Critic with features that
+make it more usable in a professional setting.
+
+Planned features (not yet implemented):
+- Ability to record deviations from rules
+- Rules for professional Lisp code (such as required docstrings)
+
+* Original Lisp Critic README
 see https://courses.cs.northwestern.edu/325/exercises/critic.php#critic
 
 - Author: Chris Riesbeck
