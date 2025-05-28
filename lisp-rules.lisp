@@ -144,6 +144,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 ;;;   Catch (format t "..." arg) where "..." takes no arguments
 ;;;   Catch all nested conditional combinations between IF and COND
 
+(defun symbol-name-p (symbol-name the-symbol)
+  (and (symbolp the-symbol)
+       (equal (string the-symbol) symbol-name)))
+
+(defun symbol-package-p (symbol-pack the-symbol)
+  (and (symbolp the-symbol)
+       (equal (string (package-name (symbol-package the-symbol)))
+              symbol-pack)))
+
 (define-lisp-pattern no-format-t
     (format t (?*))
   "There is a format call writing to stdout.  Forgotten ~
@@ -849,3 +858,23 @@ you should just use the pathname passed in."
 (define-lisp-pattern greater-difference-0
     (> (- (? x) (? y)) 0)
   "Instead of (> (- x y) 0), just write (> x y).")
+
+;;; Performance - cl-ppcre
+
+(defun cl-ppcre-p (the-symbol)
+  (symbol-package-p "CL-PPCRE" the-symbol))
+
+(defun split-p (the-symbol)
+  (symbol-package-p "SPLIT" the-symbol))
+
+(define-lisp-pattern perf-regex-no-strings-in-ppcre-split
+    ((?and (?is cl-ppcre-p) (?is split-p))
+     (?or (?is stringp)
+          (format (?*)))
+     (?*))
+  "Don't feed raw regex strings into cl-ppcre:split.  This ~
+   requires cl-ppcre to make a new scanner object each call. ~
+   Instead, make a constant with cl-ppcre:create-scanner and ~
+   reuse.")
+
+;;; TODO: Make rules for other cl-ppcre functions
