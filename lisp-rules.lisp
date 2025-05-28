@@ -158,9 +158,77 @@ OTHER DEALINGS IN THE SOFTWARE.
   "There is a format call writing to stdout.  Forgotten ~
    debug message?")
 
+(define-lisp-pattern string-case-in-format
+    (format (?*) (?contains (?or string-upcase string-downcase))
+            (?*))
+  "string-upcase and string-downcase can be implemented ~
+   directly in the format string.")
+
+(defun do-p (val)
+  (symbol-name-p "DO" val))
+
+(define-lisp-pattern do-when-with-one-expression-in-loop
+  (loop (?*) (?is do-p) (when (?) (?)) (?*))
+  "Use WHEN in the loop instead, since your DO only does one ~
+   thing.")
+
+(define-lisp-pattern no-defvars
+    (defvar (?*))
+  "Global variables should be used sparingly, if at all.")
+
 (define-lisp-pattern required-docstring
     (defun (?) (?not (?is stringp)) (?*))
   "A docstring is required for this function.")
+
+(defun empty-docstring-p (val)
+  (equal "" val))
+
+(define-lisp-pattern empty-docstring
+    (defun (?) (?) (?is empty-docstring-p) (?*))
+  "Empty docstring.")
+
+(define-lisp-pattern globals-need-docstring
+    ((?or defparameter defvar)
+     (?*)
+     (?not (?is stringp)))
+  "Global variables require a docstring.")
+
+(defun define-constant-p (val)
+  (symbol-name-p "DEFINE-CONSTANT" val))
+
+(defun alexandria-p (val)
+  (symbol-package-p "ALEXANDRIA" val))
+
+(define-lisp-pattern constants-need-docstring
+    ((?and (?is alexandria-p) (?is define-constant-p))
+     (?*)
+     (?not :documentation) (?not (?is stringp)))
+  "Constants require a documentation parameter with a ~
+   docstring at the end.")
+
+(defun earmuffed-p (earmuff value)
+  (let* ((val-str (string value))
+         (first-char (subseq val-str 0 1))
+         (last-char (subseq val-str (1- (length val-str)))))
+    (and (equal earmuff first-char) (equal earmuff last-char))))
+
+(defun plus-earmuffed-p (value)
+  (earmuffed-p "+" value))
+
+(defun asterisk-earmuffed-p (value)
+  (earmuffed-p "*" value))
+
+(define-lisp-pattern constant-plus-earmuff-required
+  ((?or (?and (?is alexandria-p) (?is define-constant-p)) defconstant)
+   (?not (?is plus-earmuffed-p)) (?*))
+  "Constants must be earmuffed with plus signs ~
+   (example: +my-constant+)")
+
+(define-lisp-pattern global-asterisk-earmuff-required
+  ((?or defvar defparameter)
+   (?not (?is asterisk-earmuffed-p)) (?*))
+  "Globals must be earmuffed with asterisks ~
+   (example: *my-global-variable*)")
 
 (define-lisp-pattern copy-array
     (copy-array (?))
@@ -868,6 +936,21 @@ you should just use the pathname passed in."
     (mapcan (?*))
   "Don't use mapcan.  It is destructive and can lead to ~
    unintended behavior.  Use alexandria:mappend instead.")
+
+;;; Performance - General
+
+(defun for-p (a)
+  (symbol-name-p "FOR" a))
+
+(defun of-type-p (a)
+  (symbol-name-p "OF-TYPE" a))
+
+(define-lisp-pattern perf-set-iterator-types
+    (loop (?is for-p) (?is atom) (?not (?is of-type-p)) (?*))
+  "You need to define the type of your iterator ~
+   for performance using of-type.  Example:
+   (loop for i of-type symbol in '(a b c)
+         do (...))")
 
 ;;; Performance - cl-ppcre
 
