@@ -859,6 +859,11 @@ you should just use the pathname passed in."
     (> (- (? x) (? y)) 0)
   "Instead of (> (- x y) 0), just write (> x y).")
 
+(define-lisp-pattern no-mapcan
+    (mapcan (?*))
+  "Don't use mapcan.  It is destructive and can lead to ~
+   unintended behavior.  Use alexandria:mappend instead.")
+
 ;;; Performance - cl-ppcre
 
 (defun cl-ppcre-p (the-symbol)
