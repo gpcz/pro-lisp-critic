@@ -6,6 +6,7 @@ make it more usable in a professional setting.
 Planned features (not yet implemented):
 - Ability to record deviations from rules
 - Rules for professional Lisp code (such as required docstrings)
+- A "suggester" for new rules based on redundant code (already a function)
 
 * Original Lisp Critic README
 see https://courses.cs.northwestern.edu/325/exercises/critic.php#critic
