@@ -144,6 +144,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 ;;;   Catch (format t "..." arg) where "..." takes no arguments
 ;;;   Catch all nested conditional combinations between IF and COND
 
+(define-lisp-pattern no-format-t
+    (format t (?*))
+  "There is a format call writing to stdout.  Forgotten ~
+   debug message?")
+
 (define-lisp-pattern required-docstring
     (defun (?) (?not (?is stringp)) (?*))
   "A docstring is required for this function.")
