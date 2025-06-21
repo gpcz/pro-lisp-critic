@@ -1,0 +1,36 @@
+name: Test pro-lisp-critic on CCL
+run-name: ${{ github.actor }} is testing pro-lisp-critic on CCL
+on: [push]
+jobs:
+  Test-pro-lisp-critic-on-ccl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: mkdir -p ../common-lisp
+      - run: cp -r ../pro-lisp-critic ../common-lisp/
+      - name: Download dependency Alexandria
+        run: cd ../common-lisp && git clone https://github.com/keithj/alexandria
+      - name: Download dependency trivial-features
+        run: cd ../common-lisp && git clone https://github.com/trivial-features/trivial-features
+      - name: Download dependency trivial-garbage
+        run: cd ../common-lisp && git clone https://github.com/trivial-garbage/trivial-garbage
+      - name: Download dependency trivial-backtrace
+        run: cd ../common-lisp && git clone https://github.com/hraban/trivial-backtrace
+      - name: Download dependency asdf-flv
+        run: cd ../common-lisp && git clone https://github.com/didierverna/asdf-flv
+      - name: Download dependency global-vars
+        run: cd ../common-lisp && git clone https://github.com/lmj/global-vars
+      - name: Download dependency bordeaux-threads
+        run: cd ../common-lisp && git clone https://github.com/sionescu/bordeaux-threads
+      - name: Download dependency fiveam
+        run: cd ../common-lisp && git clone https://github.com/lispci/fiveam
+      - name: Download CCL
+        run: curl -LO https://github.com/Clozure/ccl/releases/download/v1.12.2/ccl-1.12.2-linuxx86.tar.gz
+      - name: Unpack CCL
+        run: tar xf ccl-1.12.2-linuxx86.tar.gz
+      - name: Download ASDF
+        run: curl -O https://asdf.common-lisp.dev/archives/asdf.lisp
+      - name: Run tests
+        run: ccl/lx86cl64 --load asdf.lisp --load gh-workflow-runtests.lisp
+      - run: echo "🍏 This job's status is ${{ job.status }}."
