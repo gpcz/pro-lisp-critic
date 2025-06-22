@@ -12,14 +12,19 @@
     ((symbolp item) (string item))
     (t (error "Not a string or symbol: ~S" item))))
 
-(defun deviation-match-p (critique code deviation)
-  (cond
-    ((eql 'defun (first code))
-     (and (equal (cleanup (getf deviation :construct-type)) "FUNCTION")
+(defun second-thing-p (critique code deviation construct-type)
+  (and (equal (cleanup (getf deviation :construct-type)) construct-type)
           (equal (cleanup (getf deviation :construct-name))
                  (cleanup (second code)))
           (equal (cleanup (critique:critique-name critique))
                  (cleanup (getf deviation :rule)))))
+
+(defun deviation-match-p (critique code deviation)
+  (cond
+    ((eql 'defun (first code))
+     (second-thing-p critique code deviation "FUNCTION"))
+    ((eql 'defmacro (first code))
+     (second-thing-p critique code deviation "MACRO"))
     (t nil)))
 
 (defun deviations-match-p (critique code deviations)

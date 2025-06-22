@@ -177,7 +177,9 @@ OTHER DEALINGS IN THE SOFTWARE.
   "Global variables should be used sparingly, if at all.")
 
 (define-lisp-pattern required-docstring
-    (defun (?) (?not (?is stringp)) (?*))
+    (?or
+     (defun (?) (?) (?not (?is stringp)) (?*))
+     (defmacro (?) (?) (?not (?is stringp)) (?*)))
   "A docstring is required for this function.")
 
 (defun empty-docstring-p (val)
