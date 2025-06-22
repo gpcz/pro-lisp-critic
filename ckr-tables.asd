@@ -6,4 +6,5 @@
     :maintainer "CHIBA Masaomi"
     :version "1.0"
     :license "MIT License"
+    :pathname "t/"
     :components ((:file "tables")))
