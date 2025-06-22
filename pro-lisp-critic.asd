@@ -9,6 +9,7 @@
   :author "Chris Riesbeck and Gregory Czerniak"
   :maintainer "Gregory Czerniak"
   :license "MIT Licence"
+  :pathname "src/"
   :serial t
   :depends-on ("ckr-tables" "alexandria" "uiop")
   :components ((:file "critique")
