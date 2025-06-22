@@ -252,7 +252,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (define-lisp-pattern sets-globals
  (?top-level ((?or defun defmacro) (?*)) (?sets-free-vars vars))
-  "GLOBALS!! Don't use global variables, i.e.,~{ ~S~}"
+  "Don't use global variables, i.e.,~{ ~S~}"
   (? vars))
 
 (define-lisp-pattern sets-parameters
@@ -260,16 +260,16 @@ OTHER DEALINGS IN THE SOFTWARE.
    (?*)
    (?contains ((?or setq setf incf decf) (? var) (?*)))
    (?*))
-  "It's bad style to reassign input parameters like ~S ~
-   -- and often useless."
+  "It's bad style to reassign input parameters like ~S."
   (? var))
 
 (define-lisp-pattern eql-on-numbers
  (?and ((?eql-pred eql) (? arg1) (? arg2))
   (?or (?match (?is numberp) (? arg1))
    (?match (?is numberp) (? arg2))))
-  "Don't use (~S ~S ~S) to compare numbers, use =. = handles floating point numbers ~
-   correctly, and signals an error if passed a non-number."
+  "Don't use (~S ~S ~S) to compare numbers, use =. = handles ~
+   floating point numbers correctly, and signals an error if ~
+   passed a non-number."
   (? eql) (? arg1) (? arg2))
 
 (define-lisp-pattern equal-with-nil
@@ -281,7 +281,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (define-lisp-pattern typep-primitive
     (typep (?) (quote (?or integer number string cons atom list)))
-  "For basic types, specific predicates, such as integerp and so on, are simpler than typep.")
+  "For basic types, specific predicates, such as integerp and ~
+   so on, are simpler than typep.")
 
 (define-lisp-pattern cond-without-default
  (cond (?*) ((?not t) (?*)))
@@ -292,13 +293,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 (define-lisp-pattern cond-test-no-exp
  (cond (?*) ((? test)) (?) (?*))
   "Try to avoid COND branches with tests and no actions. ~
-They're easy to misread. Try (OR ~S ...) instead."
+   They're easy to misread. Try (OR ~S ...) instead."
   (? test))
 
 (define-lisp-pattern cond-else-no-exp
  (cond (?*) ((? test)))
   "Try to avoid COND branches with tests and no actions. ~
-They're easy to misread. Try (T ~S) instead."
+   They're easy to misread. Try (T ~S) instead."
   (? test))
 
 
@@ -307,7 +308,7 @@ They're easy to misread. Try (T ~S) instead."
      (?)
    (?contains (setq (? var) (? incr))))
   "Most SETQ's of a DO variable, like ~S, are better done ~
-with (DO (... (~S ~S ~S)...) ...)"
+   with (DO (... (~S ~S ~S)...) ...)"
   (? var) (? var) (? init) (? incr))
 
 (define-lisp-pattern setf-in-do-inc
@@ -317,8 +318,7 @@ with (DO (... (~S ~S ~S)...) ...)"
                  (?*)))
    (?*))
   (?*))
-  "~S is unnecessary in the increment part of a ~S clause. Why? What should ~
-you write?"
+  "~S is unnecessary in the increment part of a ~S clause."
   (? setf)
   (? fn))
 
@@ -330,7 +330,7 @@ If the return value doesn't matter, use WHEN or UNLESS.")
 
 (define-lisp-pattern nested-and-or 
     ((?and (?or and or) (? fn)) (?*) ((? fn) (?*)) (?*))
-  "Why nest an ~S inside an ~S?" (? fn) (? fn))
+  "Don't nest ~S inside an ~S." (? fn) (? fn))
 
 (define-lisp-pattern nested-ifs
  (if (?) ((?or cond if) (?*)) (?*))
@@ -338,23 +338,20 @@ If the return value doesn't matter, use WHEN or UNLESS.")
 
 (define-lisp-pattern nested-cond-else-cond
  (cond (?*) (t ((?and (?or cond if) (? form)) (?*))))
-  "Why nest a ~S in the ELSE branch of a COND when one flat COND ~
-   will work instead?"
-  (? form))
+  "This can be implemented in one flat COND instead.")
 
 (define-lisp-pattern nested-if-else-cond
  (if (?) (?) ((?and (?or cond if) (? form)) (?*)))
-  "Why nest a ~S in the ELSE branch of an IF when one flat COND ~
-   will work instead?"
-  (? form))
+  "This can be implemented in one flat COND instead.")
 
 (define-lisp-pattern needless-cond
     (cond ((?) t) (t nil))
-  "There's an unnecessary COND here.")
+  "This can be implemented by something simpler than COND.")
 
 (define-lisp-pattern needless-cond-not
     (cond ((?) nil) (t t))
-  "There's a COND here that can be replaced with something simpler (not IF).")
+  "There's a COND here that can be replaced with something
+   simpler (not IF).")
 
 (define-lisp-pattern needless-if
  (?or (if (?) t nil) (if (?) t))
@@ -367,29 +364,27 @@ If the return value doesn't matter, use WHEN or UNLESS.")
 
 (define-lisp-pattern if->or
  (if (?) t (?not nil))
-  "Instead of (IF test T else), just write (OR test else)"
-  )
+  "Instead of (IF test T else), just write (OR test else)")
 
 (define-lisp-pattern cond->or
  (cond ((?) t) (t (?not nil)))
-  "Instead of (COND (test T) (T else)), just write (OR test else)"
-  )
+  "Instead of (COND (test T) (T else)), just write (OR test else)")
 
 (define-lisp-pattern needless-and-t
  (and (?*) t)
-  "Why do you think you need that T at the end of the AND?")
+  "The t at the end of AND is unnecessary.")
 
 (define-lisp-pattern needless-or-nil
  (or (?*) nil)
-  "Why do you think you need that NIL at the end of the OR?")
+  "The nil at the end of OR is unnecessary.")
 
 (define-lisp-pattern needless-and
  (and (?))
-  "Why do you think you need that AND?")
+  "AND is not necessary for one clause.")
 
 (define-lisp-pattern needless-or
  (or (?))
-  "Why do you think you need that OR?")
+  "OR is not necessary for one clause.")
 
 (define-lisp-pattern if-for-not
  (?and (if (?) nil t) (? form))
@@ -434,7 +429,7 @@ If the return value doesn't matter, use WHEN or UNLESS.")
 
 (define-lisp-pattern progn-single-form
     (defun (?) (?) (?contains progn))
-  "Why do you think you need a PROGN?")
+  "PROGN is rarely if ever needed in a function.")
 
 (define-lisp-pattern setf-push
  ((?and (?or setq setf) (? setf)) (? x) (cons (? y) (? x)))
@@ -449,12 +444,13 @@ If the return value doesn't matter, use WHEN or UNLESS.")
 
 (define-lisp-pattern lambda-for-identity
     (lambda ((? x)) (? x))
-  "You don't need that LAMBDA. Common Lisp has a function that does the same thing.")
+  "Use #'identity.")
 
 (define-lisp-pattern let-atoms
  (let ((?*) (?or (?and (?is atom) (? var)) ((? var))) (?*)) (?*))
-  "Always initialize LET variables like ~S with (~S NIL), not just ~S or (~S). It's too ~
-easy to misread what's being initialized to what."
+  "Always initialize LET variables like ~S with (~S NIL), not ~
+   just ~S or (~S). It's too easy to misread what's being ~
+   initialized to what."
   (? var) (? var) (? var) (? var))
 
 (define-lisp-pattern let*-single
@@ -471,33 +467,35 @@ easy to misread what's being initialized to what."
           (?*))
      ((?and push (? fn)) (?) (and (?is symbolp) (? var)))))
    (?*))
-  "Don't use a DO body to collect values. 
-Incorporate the body into the DO variable update list.")
+  "Don't use a DO body to collect values. ~
+   Incorporate the body into the DO variable update list.")
 
 (define-lisp-pattern do*-single-var
  (do* ((?)) (?*))
-  "DO* says \"later variable clauses depend on earlier ones.\" Clearly that's not true here so use DO."
-  )
+  "DO* says \"later variable clauses depend on earlier ~
+   ones.\" Clearly that's not true here so use DO.")
 
 (define-lisp-pattern format-constant-string
     (format t (?or "~A" "~a") (?is stringp))
-  "There's a simpler way to print a constant string.")
+  "Pass the string directly into the format t.")
 
 (define-lisp-pattern qnil
  (defun (?) (?) (?*) (?contains '(?and (?or t nil) (? const))) (?*))
-  "Don't quote ~S.  ~:*~S is a constant and doesn't need quoting. [If you ~
-wrote '() to initialize a list, that's OK. It's impossible for the ~
-Lisp Critic to distinguish '() from 'NIL internally.]"
+  "Don't quote ~S.  ~:*~S is a constant and doesn't need quoting. ~
+   [If you wrote '() to initialize a list, that's OK. It's impossible ~
+   for the Lisp Critic to distinguish '() from 'NIL internally.]"
   (? const))
 
 (define-lisp-pattern qnumber
  '(?and (?is numberp) (? n))
-  "Don't quote numbers like ~S. Numbers are constants and don't need quoting."
+  "Don't quote numbers like ~S. Numbers are constants and ~
+   don't need quoting."
   (? n))
 
 (define-lisp-pattern quote-keyword
  '(?and (?is keywordp) (? key))
-  "Don't quote keywords like ~S. Keywords are constants and don't need quoting."
+  "Don't quote keywords like ~S. Keywords are constants and ~
+   don't need quoting."
   (? key))
 
 (define-lisp-pattern using-print
@@ -506,7 +504,8 @@ Lisp Critic to distinguish '() from 'NIL internally.]"
 
 (define-lisp-pattern car-cdr
  (car (cdr (?)))
-  "Use CADR (or CADDR or ...) or SECOND (or THIRD or ...), not (CAR (CDR ...)).")
+  "Use CADR (or CADDR or ...) or SECOND (or THIRD or ...), ~
+   not (CAR (CDR ...)).")
 
 (define-lisp-pattern nth-for-cdr
  (nth 1 (?))
@@ -528,10 +527,6 @@ Lisp Critic to distinguish '() from 'NIL internally.]"
    Use DO. Make ~S a DO variable and don't use SETQ etc at all."
   (? fn) (? var) (? var))
 
-(define-lisp-pattern substitute-use
- (substitute (?*))
-  "Because SUBSTITUTE creates new lists, it is expensive and used rarely.")
-
 (define-lisp-pattern rplaca
     (rplaca (? var) (?))
   "Instead of (RPLACA ~S ...) use (SETF (CAR ~S) ...)."
@@ -542,19 +537,14 @@ Lisp Critic to distinguish '() from 'NIL internally.]"
   "Instead of (RPLACD ~S ...) use (SETF (CDR ~S) ...)."
   (? var) (? var))
 
-(define-lisp-pattern misspelled-occurrence
- (?or occurance occurrance occurence occurances occurrances occurences)
-  "You must be a real computer scientist. None of them can spell occurrence.")
-
 (define-lisp-pattern cons-with-nil
  (cons (? x) nil)
-  "~S is silly -- ~
-     what's the right way to make a list of ~S?"
-  (cons (? x) nil) (? x))
+  "Use (list ~S) instead."
+  (? x))
 
 (define-lisp-pattern cons-list
  (?and (cons (?) (list (?*))) (? x))
-  "Why CONS in ~S" (? x))
+  "Add the element to the start of the list.")
 
 (define-lisp-pattern append-list-loop
  (do ((?*) 
@@ -578,20 +568,19 @@ Lisp Critic to distinguish '() from 'NIL internally.]"
 
 (define-lisp-pattern append-list-list
  (append (list (? x)) (? y))
-  "~S is silly. What's the right way to add something
-   to the front of a list?"
-  (append (list (? x)) (? y)))
+  "Use CONS to add something to the front of a list.")
 
 (define-lisp-pattern append-list2-list
  (append (list (? x) (?) (?*)) (? y))
-  "(APPEND (LIST ~S ...) ~S) is inefficient. It makes a list then copies it. ~
-Instead, do (CONS ~S (CONS ... ~S)) or (LIST* ~S ... ~S)."
+  "(APPEND (LIST ~S ...) ~S) is inefficient. It makes a list ~
+   then copies it. ~
+   Instead, do (CONS ~S (CONS ... ~S)) or (LIST* ~S ... ~S)."
   (? x) (? y) (? x) (? y) (? x) (? y))
 
 (define-lisp-pattern concatenate-list
     (concatenate 'list (?*))
-  "CONCATENATE is not needed for list construction. There are lots of more commonly used ~
-functions, like CONS and APPEND.")
+  "CONCATENATE is not needed for list construction. There are ~
+   lots of more commonly used functions, like CONS and APPEND.")
 
 (define-lisp-pattern cons-cons-acons
     (cons (cons (?) (?)) (?))
@@ -608,7 +597,7 @@ functions, like CONS and APPEND.")
 
 (define-lisp-pattern add-zero
     (?or (+ 0 (?)) (+ (?) 0))
-  "Add zero? Think about it...")
+  "Adding zero is unnecessary.")
 
 (define-lisp-pattern incf-1
     ((?or incf decf) (?) 1)
@@ -633,11 +622,11 @@ functions, like CONS and APPEND.")
 
 (define-lisp-pattern quote-false
  'false
-  "Don't use 'FALSE for NIL. Believe it or not, 'FALSE is true in Lisp!")
+  "Don't use 'FALSE for NIL. 'FALSE is true in Lisp.")
 
 (define-lisp-pattern quote-true
  'true
-  "Don't use 'TRUE for true. Just use T (lowercased). That's the normal default true value.")
+  "Don't use 'TRUE for true. Use T (lowercased).")
 
 (define-lisp-pattern return-done
  'done
@@ -647,9 +636,7 @@ functions, like CONS and APPEND.")
 
 (define-lisp-pattern apply-for-funcall
  (apply (? fn) (list (?*)))
-  "(APPLY ~S (LIST ...)) makes a list for no reason. How can you call ~
-~S with those arguments directly?"
-  (? fn) (? fn))
+  "Use FUNCALL instead.")
 
 (define-lisp-pattern optionals
  (defun (? fun-name) ((?*) &optional (?) (?) (?*)) (?*))
@@ -658,8 +645,8 @@ functions, like CONS and APPEND.")
 
 (define-lisp-pattern list-length
     (list-length ?)
-  "LIST-LENGTH is slower than LENGTH because it has to worry about circular lists. ~
-   Use LENGTH unless circular lists are expected (rare).")
+  "LIST-LENGTH is slower than LENGTH because it has to worry about ~
+   circular lists. Use LENGTH unless circular lists are expected (rare).")
 
 (define-lisp-pattern length=num
     (?or 
@@ -692,7 +679,7 @@ Or consider using ALEXANDRIA:LENGTH=."
 
 (define-lisp-pattern not-consp
     (not (consp (?)))
-  "NOT CONSP is equvalent to what basic predicate?")
+  "Use NULL instead of not-consp.")
 
 (define-lisp-pattern listp-for-consp
  (cond (?*)
@@ -721,8 +708,7 @@ Or consider using ALEXANDRIA:LENGTH=."
 
 (define-lisp-pattern find-member-for-assoc
  ((?and (?or find member) (? fn)) (?*) :key (?or 'car #'car))
-  "When working with lists of pairs, use ASSOC, not ~S and CAR. That's what ~
-ASSOC was built for!"
+  "When working with lists of pairs, use ASSOC, not ~S and CAR."
   (? fn))
 
 (define-lisp-pattern constant-bad-eof
@@ -761,11 +747,11 @@ you should just use the pathname passed in."
 
 (define-lisp-pattern evil-eval
  (eval (?*))
-  "EVAL may not always be evil, but it's almost certainly not the best answer.")
+  "EVAL should be used sparingly for security reasons.")
 
 (define-lisp-pattern uses-prog
  (prog (?*))
-  "PROG is obsolete. There are other ways to code.")
+  "PROG is obsolete.")
 
 (define-lisp-pattern needless-setf
  (?top-level
@@ -802,7 +788,7 @@ you should just use the pathname passed in."
                   (?*))))
          )
     ))
-  "Why do you think you need that ~S on ~S?" (? FN) (? VAR))
+  "That ~S on ~S is probably not necessary." (? FN) (? VAR))
 
 (define-lisp-pattern needless-push
  (?top-level
@@ -839,7 +825,7 @@ you should just use the pathname passed in."
                   (?*))))
          )
     ))
-  "Why do you think you need that ~S on ~S?" (? FN) (? VAR))
+  "That ~S on ~S is likely unnecessary." (? FN) (? VAR))
 
 (define-lisp-pattern needless-shiftf
   (shiftf (?) (?))
@@ -877,11 +863,6 @@ you should just use the pathname passed in."
    holds a value with more semantics, use a more specific name."
   (? var))
 
-(define-lisp-pattern misspells-occurrences
-  (?or (?name-contains "occurances")
-       (?name-contains "occurences"))
-  "You misspelled 'occurrences.'")
-
 (define-lisp-pattern ?-for-predicate
   (?name-ends-with "?")
   "In Common Lisp, use -p to end predicate names, not ? as in Scheme.'")
@@ -898,7 +879,7 @@ you should just use the pathname passed in."
 
 (define-lisp-pattern unused-mapcar-value
   (let (?*) (mapcar (?*)) (?) (?*))
-  "MAPCAR is building a list that's not used. Use MAPC instead.")
+  "MAPCAR is building a list that's not used. Use MAP NIL instead.")
 
 (define-lisp-pattern multiple-value-list
     (multiple-value-list (?))
@@ -925,7 +906,7 @@ you should just use the pathname passed in."
 
 (define-lisp-pattern greater-difference-0
     (> (- (? x) (? y)) 0)
-  "Instead of (> (- x y) 0), just write (> x y).")
+  "Instead of (> (- x y) 0), write (> x y).")
 
 (define-lisp-pattern no-defconstant
     (defconstant (?*))
