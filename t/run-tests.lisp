@@ -2,4 +2,9 @@
 
 (defun run-test-suite ()
   "Runs the test suite(s) for deviations."
-  (fiveam:run! 'deviations-tests))
+  (let ((test-results (fiveam:run 'deviations-tests)))
+    (fiveam:explain! test-results)
+    (when (find-if (lambda (item)
+                     (equal (type-of item) 'it.bese.fiveam::test-failure))
+                   test-results)
+        (error "found failure~%"))))
