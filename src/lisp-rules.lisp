@@ -202,7 +202,7 @@ OTHER DEALINGS IN THE SOFTWARE.
   (symbol-package-p "ALEXANDRIA" val))
 
 (define-lisp-pattern constants-need-docstring
-    ((?and (?is alexandria-p) (?is define-constant-p))
+    ((?is define-constant-p)
      (?*)
      (?not :documentation) (?not (?is stringp)))
   "Constants require a documentation parameter with a ~
