@@ -29,6 +29,8 @@
      (second-thing-p critique code deviation "DEFPARAMETER"))
     ((eql 'defvar (first code))
      (second-thing-p critique code deviation "DEFVAR"))
+    ((equal "DEFINE-CONSTANT" (string (first code)))
+     (second-thing-p critique code deviation "DEFINE-CONSTANT"))
     (t nil)))
 
 (defun deviations-match-p (critique code deviations)
