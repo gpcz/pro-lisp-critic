@@ -1,6 +1,9 @@
 name: Test pro-lisp-critic on SBCL
 run-name: ${{ github.actor }} is testing pro-lisp-critic on SBCL
-on: [push]
+on:
+  push:
+    branches:
+      - 'main'
 jobs:
   Test-pro-lisp-critic-on-sbcl:
     runs-on: ubuntu-latest
