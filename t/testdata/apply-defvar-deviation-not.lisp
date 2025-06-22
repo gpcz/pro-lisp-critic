@@ -1,0 +1,2 @@
+
+(defvar *test* 3)
