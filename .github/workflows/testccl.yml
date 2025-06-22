@@ -1,6 +1,9 @@
 name: Test pro-lisp-critic on CCL
 run-name: ${{ github.actor }} is testing pro-lisp-critic on CCL
-on: [push]
+on:
+  push:
+    branches:
+      - 'main'
 jobs:
   Test-pro-lisp-critic-on-ccl:
     runs-on: ubuntu-latest
