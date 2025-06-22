@@ -7,4 +7,5 @@
     (when (find-if (lambda (item)
                      (equal (type-of item) 'it.bese.fiveam::test-failure))
                    test-results)
-        (error "found failure~%"))))
+      (uiop:quit 1)
+      (error "found failure~%"))))
