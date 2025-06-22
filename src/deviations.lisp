@@ -25,6 +25,8 @@
      (second-thing-p critique code deviation "FUNCTION"))
     ((eql 'defmacro (first code))
      (second-thing-p critique code deviation "MACRO"))
+    ((eql 'defparameter (first code))
+     (second-thing-p critique code deviation "DEFPARAMETER"))
     (t nil)))
 
 (defun deviations-match-p (critique code deviations)
