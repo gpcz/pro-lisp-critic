@@ -1,7 +1,7 @@
-![example workflow](https://github.com/gpcz/pro-lisp-critic/actions/workflows/testsbcl.yml/badge.svg)
-![example workflow](https://github.com/gpcz/pro-lisp-critic/actions/workflows/testccl.yml/badge.svg)
-![example workflow](https://github.com/gpcz/pro-lisp-critic/actions/workflows/testecl.yml/badge.svg)
-![example workflow](https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml/badge.svg)
+[[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testsbcl.yml/badge.svg]]
+[[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testccl.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testccl.yml/badge.svg]]
+[[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testecl.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testecl.yml/badge.svg]]
+[[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml/badge.svg]]
 
 * PRO-LISP-CRITIC - A Lisp code critiquing package designed for professional use.
 
