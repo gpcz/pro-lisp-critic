@@ -1,0 +1,32 @@
+name: Test pro-lisp-critic on ECL
+run-name: ${{ github.actor }} is testing pro-lisp-critic on ECL
+on: [push]
+jobs:
+  Test-pro-lisp-critic-on-ecl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install ECL
+        run: sudo apt-get install -y ecl
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: mkdir -p ../common-lisp
+      - run: cp -r ../pro-lisp-critic ../common-lisp/
+      - name: Download dependency Alexandria
+        run: cd ../common-lisp && git clone https://github.com/keithj/alexandria
+      - name: Download dependency trivial-features
+        run: cd ../common-lisp && git clone https://github.com/trivial-features/trivial-features
+      - name: Download dependency trivial-garbage
+        run: cd ../common-lisp && git clone https://github.com/trivial-garbage/trivial-garbage
+      - name: Download dependency trivial-backtrace
+        run: cd ../common-lisp && git clone https://github.com/hraban/trivial-backtrace
+      - name: Download dependency asdf-flv
+        run: cd ../common-lisp && git clone https://github.com/didierverna/asdf-flv
+      - name: Download dependency global-vars
+        run: cd ../common-lisp && git clone https://github.com/lmj/global-vars
+      - name: Download dependency bordeaux-threads
+        run: cd ../common-lisp && git clone https://github.com/sionescu/bordeaux-threads
+      - name: Download dependency fiveam
+        run: cd ../common-lisp && git clone https://github.com/lispci/fiveam
+      - name: Run tests
+        run: ecl --load gh-workflow-runtests.lisp
+      - run: echo "🍏 This job's status is ${{ job.status }}."

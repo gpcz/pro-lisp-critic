@@ -1,0 +1,39 @@
+name: Test pro-lisp-critic on Allegro
+run-name: ${{ github.actor }} is testing pro-lisp-critic on Allegro
+on: [push]
+jobs:
+  Test-pro-lisp-critic-on-allegro:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: mkdir -p ../common-lisp
+      - run: cp -r ../pro-lisp-critic ../common-lisp/
+      - name: Download dependency Alexandria
+        run: cd ../common-lisp && git clone https://github.com/keithj/alexandria
+      - name: Download dependency trivial-features
+        run: cd ../common-lisp && git clone https://github.com/trivial-features/trivial-features
+      - name: Download dependency trivial-garbage
+        run: cd ../common-lisp && git clone https://github.com/trivial-garbage/trivial-garbage
+      - name: Download dependency trivial-backtrace
+        run: cd ../common-lisp && git clone https://github.com/hraban/trivial-backtrace
+      - name: Download dependency asdf-flv
+        run: cd ../common-lisp && git clone https://github.com/didierverna/asdf-flv
+      - name: Download dependency global-vars
+        run: cd ../common-lisp && git clone https://github.com/lmj/global-vars
+      - name: Download dependency bordeaux-threads
+        run: cd ../common-lisp && git clone https://github.com/sionescu/bordeaux-threads
+      - name: Download dependency fiveam
+        run: cd ../common-lisp && git clone https://github.com/lispci/fiveam
+      - name: Download Allegro
+        run: |
+          if ! [ -f acl11.0express-linux-x64.tbz2 ]; then
+            curl -LO https://franz.com/ftp/pub/acl11.0express/linuxamd64.64/acl11.0express-linux-x64.tbz2
+          fi
+      - name: Unpack Allegro
+        run: |
+          if ! [ -d acl11.0express.64 ]; then
+            tar xf acl11.0express-linux-x64.tbz2
+          fi
+      - name: Run tests on Allegro
+        run: acl11.0express.64/alisp -I alisp.dxl -L gh-workflow-runtests.lisp
