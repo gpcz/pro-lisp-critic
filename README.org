@@ -42,3 +42,19 @@ REQUIRED-DOCSTRING:
 A docstring is required for this function.
 ----------------------------------------------------------------------
 #+END_EXAMPLE
+
+Deviations:
+You can produce a deviation with the DEVIATION function like so:
+
+#+BEGIN_SRC lisp
+  (pro-lisp-critic:deviation
+   :construct-type :function :construct-name "test"
+   :rule :required-docstring :rationale "test")
+  (defun test (a)
+    3)
+#+END_SRC
+
+These deviations get read during a call to CRITIQUE-FILE
+and cause the engine to remove any critique meeting the
+criteria.  You can use this to do things that would be
+ordinarily forbidden but might have a good reason.
