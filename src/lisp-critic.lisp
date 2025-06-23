@@ -288,7 +288,8 @@ forgot the USE-PACKAGE. Do this to fix things:
 
 (defun make-response-string (name response blist)
   (declare (ignore name))
-  (format nil "~&~?"
+  (format nil "~A:~&~?"
+          name
           (response-format-string response)
           (instantiate-pattern (response-args response)
                                blist)))
