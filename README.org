@@ -13,3 +13,32 @@ Planned features (not yet implemented):
 - A "suggester" for new rules based on redundant code (already a function)
 
 The original readme is available in oldREADME.org.
+
+Usage:
+
+Loading:
+
+#+BEGIN_SRC lisp
+  (asdf:load-system :pro-lisp-critic)
+#+END_SRC
+
+The function CRITIQUE-FILE returns a list of critiques, and
+the function PRINT-CRITIQUE-RESPONSES produces a human-readable
+report of the critiques.  For example:
+
+#+BEGIN_SRC lisp
+  (pro-lisp-critic:print-critique-responses
+   (pro-lisp-critic:critique-file
+    (asdf:system-relative-pathname
+     "pro-lisp-critic"
+     "t/testdata/apply-function-deviation-not.lisp")))
+#+END_SRC
+
+Produces:
+
+#+BEGIN_EXAMPLE
+----------------------------------------------------------------------
+REQUIRED-DOCSTRING:
+A docstring is required for this function.
+----------------------------------------------------------------------
+#+END_EXAMPLE
