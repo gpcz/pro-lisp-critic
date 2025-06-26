@@ -8,9 +8,13 @@
 This is an ongoing project to develop Lisp Critic with features that
 make it more usable in a professional setting.
 
-Planned features (not yet implemented):
+New features (implemented):
+- New rules for professional Lisp projects
 - Ability to record deviations from rules
+
+Planned features (not yet implemented):
 - A "suggester" for new rules based on redundant code (already a function)
+- Ability to critique an ASDF system rather than single files.
 
 The original readme is available in oldREADME.org.
 
