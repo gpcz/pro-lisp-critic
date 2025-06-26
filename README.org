@@ -3,7 +3,7 @@
 [[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testecl.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testecl.yml/badge.svg]]
 [[https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml][https://github.com/gpcz/pro-lisp-critic/actions/workflows/testallegro.yml/badge.svg]]
 
-* PRO-LISP-CRITIC - A Lisp code critiquing package designed for professional use.
+* PRO-LISP-CRITIC - A Lisp code critiquing (static analysis) package designed for professional use.
 
 This is an ongoing project to develop Lisp Critic with features that
 make it more usable in a professional setting.
@@ -42,8 +42,7 @@ Produces:
 
 #+BEGIN_EXAMPLE
 ----------------------------------------------------------------------
-[REDACTED]/pro-lisp-critic/t/testdata/apply-function-de
-iation-not.lisp
+[REDACTED]/pro-lisp-critic/t/testdata/apply-function-deviation-not.lisp
 (DEFUN TEST (A) 3)
 
 REQUIRED-DOCSTRING:
