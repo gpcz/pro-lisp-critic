@@ -194,7 +194,7 @@ forgot the USE-PACKAGE. Do this to fix things:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun critique-definition
-      (defn deviations &key (names (get-pattern-names)))
+      (defn deviations file &key (names (get-pattern-names)))
   (check-type defn list)
   (check-type deviations list)
   (cond ((or (atom defn)
@@ -208,7 +208,7 @@ forgot the USE-PACKAGE. Do this to fix things:
          (error "No lisp rules have been loaded."))
         (t
          (deviations:filter-critiques
-          (generate-critiques defn names)
+          (generate-critiques defn names file defn)
           defn deviations))))
 
 (defun critique-file
@@ -221,7 +221,7 @@ forgot the USE-PACKAGE. Do this to fix things:
         (do ((code (read in nil eof) (read in nil eof)))
             ((eq code eof) (values))
           (let ((critiques
-                  (critique-definition code deviations
+                  (critique-definition code deviations file
                                        :names names)))
             (when critiques
               (setf result (append result critiques)))))))
@@ -229,12 +229,13 @@ forgot the USE-PACKAGE. Do this to fix things:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun generate-critiques (code names)
+(defun generate-critiques (code names file construct)
   (loop for name in names
-        append (apply-critique-rule name code)))
+        append (apply-critique-rule name code file construct)))
 
-(defun apply-critique-rule (name code)
-  (find-critiques name (get-pattern name) code :blists '(nil) :top-level t))
+(defun apply-critique-rule (name code file construct)
+  (find-critiques name (get-pattern name) code file construct
+                  :blists '(nil) :top-level t))
 
 (defun print-critique-responses (critiques
                                  &optional (stream *standard-output*))
@@ -249,10 +250,10 @@ forgot the USE-PACKAGE. Do this to fix things:
 ;;; FIND-CRITIQUES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun find-critiques (name pat code &key (blists '(nil)) ((:top-level *top-level*) *top-level*))
+(defun find-critiques (name pat code file construct &key (blists '(nil)) ((:top-level *top-level*) *top-level*))
   (let ((new-blists (critique-match pat code blists)))
     (cond ((not (null new-blists))
-           (make-critiques name new-blists code))
+           (make-critiques name new-blists code file construct))
       ((atom code) nil)
        (t
        (or (find-critiques name pat (car code) :blists blists)
@@ -262,8 +263,9 @@ forgot the USE-PACKAGE. Do this to fix things:
 (defun critique-match (pat code blists)
   (pat-match pat code blists))
 
-(defun make-critiques (name blists code)
-  (mapcar #'(lambda (blist) (critique:new-critique name blist code))
+(defun make-critiques (name blists code file construct)
+  (mapcar #'(lambda (blist) (critique:new-critique name blist code
+                                                   file construct))
           blists))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -274,13 +276,20 @@ forgot the USE-PACKAGE. Do this to fix things:
                                 &optional (stream *standard-output*))
   (let ((name (critique:critique-name critique))
         (blist (critique:critique-blist critique))
-        (code (critique:critique-code critique)))
+        (code (critique:critique-code critique))
+        (file (critique:critique-file critique))
+        (construct (critique:critique-construct critique)))
     (let ((response (get-response name)))
       (cond ((null response)
              (let ((*print-lines* 2) (*print-pretty* t)
                    (*print-right-margin* *output-width*))
                (format stream "~&~A: Code: ~W" name code)))
             (t
+             (write-wrap stream
+                         (namestring file)
+                         *output-width*)
+             (princ construct stream)
+             (format stream "~%~%")
              (write-wrap stream
                          (make-response-string name response blist)
                          *output-width*)))

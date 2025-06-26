@@ -38,6 +38,10 @@ Produces:
 
 #+BEGIN_EXAMPLE
 ----------------------------------------------------------------------
+[REDACTED]/pro-lisp-critic/t/testdata/apply-function-de
+iation-not.lisp
+(DEFUN TEST (A) 3)
+
 REQUIRED-DOCSTRING:
 A docstring is required for this function.
 ----------------------------------------------------------------------
