@@ -16,6 +16,7 @@
                (:file "deviations")
                (:file "extend-match")
                (:file "write-wrap")
+               (:file "internals")
                (:file "lisp-critic")
                (:file "lisp-rules"))
   :in-order-to ((test-op (test-op "pro-lisp-critic/tests"))))
