@@ -12,11 +12,11 @@
   :pathname "src/"
   :serial t
   :depends-on ("ckr-tables" "alexandria" "uiop")
-  :components ((:file "package")
-               (:file "critique")
+  :components ((:file "critique")
                (:file "deviations")
                (:file "extend-match")
                (:file "write-wrap")
+               (:file "package")
                (:file "specials")
                (:file "internals")
                (:file "lisp-critic")
