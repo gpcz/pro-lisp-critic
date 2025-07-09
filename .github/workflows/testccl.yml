@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '.github/workflows/testccl.yml'
       - 'pro-lisp-critic.asd'
       - 't/**.lisp'
       - 'src/**.lisp'

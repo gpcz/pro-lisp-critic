@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '.github/workflows/testallegro.yml'
       - 'pro-lisp-critic.asd'
       - 't/**.lisp'
       - 'src/**.lisp'
