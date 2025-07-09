@@ -1,11 +1,3 @@
-(cl:defpackage #:pro-lisp-critic
-  (:use  #:common-lisp #:tables #:extend-match #:write-wrap)
-  (:import-from #:extend-match #:match-and)
-  (:export #:deviation
-           #:critique-file
-           #:print-critique-responses)
-  )
-
 (in-package #:pro-lisp-critic)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,7 +144,13 @@
                          *output-width*)))
       (print-separator stream))))
 
+(declaim (ftype (function (symbol cons list)
+                          (values simple-string &optional))
+                make-response-string))
 (defun make-response-string (name response blist)
+  "Given symbol NAME, cons RESPONSE, and list BLIST,
+   return a string with the critique response."
+  (declare #.*internal-optimize-settings*)
   (format nil "~A:~&~?"
           name
           (response-format-string response)
