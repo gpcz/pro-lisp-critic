@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - 'pro-lisp-critic.asd'
       - 't/**.lisp'
       - 'src/**.lisp'
 jobs:
