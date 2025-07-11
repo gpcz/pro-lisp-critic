@@ -23,18 +23,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 |#
 
 ;;; A Lisp code critiquing package.
-;;; Author: Chris Riesbeck
+;;; Original Author: Chris Riesbeck
+;;; Pro-Lisp-Critic Author: Greg Czerniak
 
 (in-package #:pro-lisp-critic)
 
 (defun deviation (&key rule construct-type construct-name rationale)
   "Placeholder for recording a Lisp Critic deviation in a file."
-  (declare #.*internal-optimize-settings*)
+  (declare #.*external-optimize-settings*)
   (declare (ignore rule construct-type construct-name rationale))
   nil)
 
 (defun critique-file
        (file &optional (names (get-pattern-names)))
+  "Given pathname or simple-string FILE and list NAMES,
+   return a list of all critique responses from the
+   code in the given file."
+  (declare #.*external-optimize-settings*)
   (check-type file (or pathname simple-string))
   (check-type names list)
   (oneret list
@@ -53,6 +58,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun print-critique-responses (critiques
                                  &optional (stream *standard-output*))
+  "Given list CRITIQUES and stream STREAM, print all
+   critique responses in the list."
+  (declare #.*external-optimize-settings*)
   (check-type critiques list)
   (check-type stream stream)
   (oneret t

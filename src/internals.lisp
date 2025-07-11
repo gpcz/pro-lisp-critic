@@ -18,6 +18,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun clear-critique-db ()
+  (declare #.*internal-optimize-settings*)
   (clear-table (get-pattern))
   (clear-table (get-response))
   nil)
@@ -41,11 +42,13 @@
   `(add-lisp-pattern ',name ',pattern ,format-string ',args))
 
 (defun add-lisp-pattern (name pat format-string args)
+  (declare #.*internal-optimize-settings*)
   (setf (get-pattern name) pat)
   (setf (get-response name) (new-response format-string args))
   name)
 
 (defun get-pattern-names ()
+  (declare #.*internal-optimize-settings*)
   (let ((l nil))
     (map-table #'(lambda (name pat)
                    (declare (ignore pat))
@@ -54,6 +57,7 @@
     (sort l #'string<)))
 
 (defun remove-lisp-pattern (name)
+  (declare #.*internal-optimize-settings*)
   (remove-key name (get-pattern))
   (remove-key name (get-response)))
 
@@ -63,6 +67,7 @@
 
 (defun critique-definition
       (defn deviations file &key (names (get-pattern-names)))
+  (declare #.*internal-optimize-settings*)
   (check-type defn list)
   (check-type deviations list)
   (cond ((or (atom defn)
@@ -82,10 +87,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun generate-critiques (code names file construct)
+  (declare #.*internal-optimize-settings*)
   (loop for name in names
         append (apply-critique-rule name code file construct)))
 
 (defun apply-critique-rule (name code file construct)
+  (declare #.*internal-optimize-settings*)
   (find-critiques name (get-pattern name) code file construct
                   :blists '(nil) :top-level t))
 
@@ -96,6 +103,7 @@
 (defun find-critiques (name pat code file construct
                        &key (blists '(nil))
                          ((:top-level *top-level*) *top-level*))
+  (declare #.*internal-optimize-settings*)
   (let ((new-blists (critique-match pat code blists)))
     (cond ((not (null new-blists))
            (make-critiques
@@ -109,9 +117,11 @@
 
 
 (defun critique-match (pat code blists)
+  (declare #.*internal-optimize-settings*)
   (pat-match pat code blists))
 
 (defun make-critiques (name blists code file construct)
+  (declare #.*internal-optimize-settings*)
   (mapcar #'(lambda (blist)
               (critique:new-critique name blist code
                                      file construct))
@@ -121,8 +131,11 @@
 ;;; Critique message printing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(declaim (ftype (function (cons &optional stream) *)
+                print-critique-response))
 (defun print-critique-response (critique
                                 &optional (stream *standard-output*))
+  (declare #.*internal-optimize-settings*)
   (let ((name (critique:critique-name critique))
         (blist (critique:critique-blist critique))
         (code (critique:critique-code critique))
@@ -167,6 +180,7 @@
 
 (defun print-separator (&optional (stream *standard-output*)
                                   (ch #\-))
+  (declare #.*internal-optimize-settings*)
   (format stream "~&~A~%"
     (make-string *output-width* :initial-element ch)))
 
@@ -184,10 +198,12 @@
 (add-extension '?contains :single 'match-contains)
 
 (defun match-contains (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (pat) args
     (find-match pat input blists)))
 
 (defun find-match (pat input blists)
+  (declare #.*internal-optimize-settings*)
   (or (pat-match pat input blists)
       (and (consp input)
            (or (find-match pat (first input) blists)
@@ -200,11 +216,13 @@
 (add-extension '?repeat :segment 'match-repeat)
 
 (defun match-repeat (args pats input blists)
+  (declare #.*internal-optimize-settings*)
   (and (not (null input))
        (destructuring-bind (pat &optional (n 1)) args
          (match-repeat-pat n pat pats input blists))))
 
 (defun match-repeat-pat (n pat pats input blists)
+  (declare #.*internal-optimize-settings*)
   (unless (null input)
     (let ((blists (pat-match pat (first input) blists)))
       (cond ((null blists) nil)
@@ -220,6 +238,7 @@
 (add-extension '?optional :segment 'match-optional)
 
 (defun match-optional (args pats input blists)
+  (declare #.*internal-optimize-settings*)
   (let ((skip-blists (pat-match pats input blists))
         (no-skip-blists
          (and (not (null input))
@@ -240,6 +259,7 @@
 (add-extension '?name-contains :single 'match-name-contains)
 
 (defun match-name-contains (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (substring) args
     (and (symbolp input)
          (search substring (symbol-name input)
@@ -252,12 +272,14 @@
 (add-extension '?name-ends-with :single 'match-name-ends-with)
 
 (defun match-name-ends-with (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (substring) args
     (and (symbolp input)
          (string-ends-with (symbol-name input) substring)
          blists)))
 
 (defun string-ends-with (str substr)
+  (declare #.*internal-optimize-settings*)
   (let ((strlen (length str))
         (substrlen (length substr)))
     (and (> strlen substrlen)
@@ -269,12 +291,14 @@
 (add-extension '?name-starts-with :single 'match-name-starts-with)
 
 (defun match-name-starts-with (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (substring) args
     (and (symbolp input)
          (string-starts-with-p (symbol-name input) substring)
          blists)))
 
 (defun string-starts-with-p (str substr)
+  (declare #.*internal-optimize-settings*)
   (let ((strlen (length str))
         (substrlen (length substr)))
     (and (>= strlen substrlen)
@@ -283,11 +307,13 @@
 (add-extension '?user-defined-name-starts-with :single 'match-user-defined-name-starts-with)
 
 (defun standard-symbolp (sym)
+  (declare #.*internal-optimize-settings*)
   (and (symbolp sym)
        (eql (load-time-value (find-package "CL"))
             (symbol-package sym))))
 
 (defun match-user-defined-name-starts-with (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (substring) args
     (and (symbolp input)
          (not (standard-symbolp input))
@@ -300,6 +326,7 @@
 (add-extension '?eql-pred :single 'match-eql-pred)
 
 (defun match-eql-pred (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (&optional name) args
     (and (member input '(eq eql equal equalp))
          (bind-variable name input blists))))
@@ -312,6 +339,7 @@
 (add-extension '?too-long :single 'match-too-long)
 
 (defun match-too-long (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (&optional name) args
     (let ((badness (get-length-badness input)))
       (when (> badness 0)
@@ -321,6 +349,7 @@
 
 
 (defun get-length-badness (code)
+  (declare #.*internal-optimize-settings*)
   (let ((code-length (list-count code)))
     (/ (- code-length *length-threshold*)
        *length-threshold*)))
@@ -335,12 +364,14 @@
 |#
 
 (defun list-count (form)
+  (declare #.*internal-optimize-settings*)
   (cond ((null form) 0)
         ((atom form) 1)
         (t (+ (list-count (car form))
               (list-count (cdr form))))))
 
 (defun get-badness-phrase (badness)
+  (declare #.*internal-optimize-settings*)
   (cond ((<= badness 1/4) "a little")
         ((<= badness 1/2) "somewhat")
         ((<= badness 3/4) "")
@@ -358,6 +389,7 @@
 (add-extension '?sets-free-vars :single 'match-sets-free-vars)
 
 (defun match-sets-free-vars (args input blists)
+  (declare #.*internal-optimize-settings*)
   (destructuring-bind (&optional name) args
     (let ((vars (remove-duplicates (find-assigned-free-vars input))))
       (if (null vars) nil
@@ -371,6 +403,7 @@
 (add-extension '?top-level :single 'match-top-level)
 
 (defun match-top-level (args input blists)
+  (declare #.*internal-optimize-settings*)
   (and *top-level*
        (match-and args input blists)))
 
@@ -388,6 +421,7 @@
 ;;; is not considered a free variable assignment.
 
 (defun find-assigned-free-vars (code &optional env-stack)
+  (declare #.*internal-optimize-settings*)
   (or (code-assigned-free-vars code env-stack)
       (and (consp code)
            (let ((new-stack (cons code env-stack)))
@@ -396,17 +430,20 @@
                    append (find-assigned-free-vars (car l) new-stack))))))
 
 (defun code-assigned-free-vars (code &optional env-stack)
+  (declare #.*internal-optimize-settings*)
   (let ((vars (code-assigned-vars code)))
     (cond ((null vars) nil)
           (t (get-free-vars vars env-stack)))))
 
 (defun get-free-vars (vars env-stack)
+  (declare #.*internal-optimize-settings*)
   (cond ((null env-stack) vars)
         ((null vars) nil)
         (t (get-free-vars (remove-local-vars vars (first env-stack))
                           (rest env-stack)))))
 
 (defun remove-local-vars (vars code-env)
+  (declare #.*internal-optimize-settings*)
   (let ((local-vars (code-vars code-env)))
     (cond ((null local-vars) vars)
           (t (set-difference vars local-vars)))))
@@ -417,6 +454,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun code-assigned-vars (code)
+  (declare #.*internal-optimize-settings*)
   (unless (atom code)
     (let ((fn (get-assigned-vars-fn (first code))))
       (cond ((null fn) nil)
@@ -444,18 +482,21 @@
 
 
 (defun code-vars (code)
+  (declare #.*internal-optimize-settings*)
   (unless (atom code)
     (let ((fn (get-local-vars-fn (first code))))
       (cond ((null fn) nil)
             (t (funcall fn code))))))
 
 (defun get-vars (vars-list)
+  (declare #.*internal-optimize-settings*)
   (loop for var-form in vars-list
         for var = (get-var var-form)
         unless (member var lambda-list-keywords)
           collect var))
 
 (defun get-var (var-form)
+  (declare #.*internal-optimize-settings*)
   (cond ((atom var-form) var-form)
         (t (get-var (car var-form)))))
 
@@ -481,7 +522,9 @@
 
 (setf (get-local-vars-fn 'loop) 'get-loop-vars)
 
+(declaim (ftype (function (t) (values list &optional)) get-loop-vars))
 (defun get-loop-vars (code)
+  (declare #.*internal-optimize-settings*)
   (cond ((atom code) nil)
         (t (let ((tail (member-if #'loop-binder-p code)))
              (cond ((null tail) nil)
@@ -489,5 +532,6 @@
                             (get-loop-vars (cddr tail)))))))))
 
 (defun loop-binder-p (x)
+  (declare #.*internal-optimize-settings*)
   (and (symbolp x)
        (member x '(for with and) :test #'string=)))
