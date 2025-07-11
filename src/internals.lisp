@@ -121,8 +121,11 @@
 ;;; Critique message printing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(declaim (ftype (function (cons &optional stream) *)
+                print-critique-response))
 (defun print-critique-response (critique
                                 &optional (stream *standard-output*))
+  (declare #.*internal-optimize-settings*)
   (let ((name (critique:critique-name critique))
         (blist (critique:critique-blist critique))
         (code (critique:critique-code critique))
@@ -481,6 +484,7 @@
 
 (setf (get-local-vars-fn 'loop) 'get-loop-vars)
 
+(declaim (ftype (function (t) (values list &optional)) get-loop-vars))
 (defun get-loop-vars (code)
   (cond ((atom code) nil)
         (t (let ((tail (member-if #'loop-binder-p code)))
