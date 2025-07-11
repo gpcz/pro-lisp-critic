@@ -29,12 +29,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun deviation (&key rule construct-type construct-name rationale)
   "Placeholder for recording a Lisp Critic deviation in a file."
-  (declare #.*internal-optimize-settings*)
+  (declare #.*external-optimize-settings*)
   (declare (ignore rule construct-type construct-name rationale))
   nil)
 
 (defun critique-file
        (file &optional (names (get-pattern-names)))
+  (declare #.*external-optimize-settings*)
   (check-type file (or pathname simple-string))
   (check-type names list)
   (oneret list
@@ -53,6 +54,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun print-critique-responses (critiques
                                  &optional (stream *standard-output*))
+  (declare #.*external-optimize-settings*)
   (check-type critiques list)
   (check-type stream stream)
   (oneret t
