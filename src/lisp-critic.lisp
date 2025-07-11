@@ -51,13 +51,15 @@ OTHER DEALINGS IN THE SOFTWARE.
                 (setf result (append result critiques)))))))
       result)))
 
-
 (defun print-critique-responses (critiques
                                  &optional (stream *standard-output*))
-  (let ((*print-pretty* nil))
-    (when critiques
-      (print-separator stream))
-    (dolist (critique critiques)
-      (print-critique-response critique stream))))
+  (check-type critiques list)
+  (check-type stream stream)
+  (oneret t
+    (let ((*print-pretty* nil))
+      (when critiques
+        (print-separator stream))
+      (dolist (critique critiques)
+        (print-critique-response critique stream)))))
 
 (provide "lisp-critic")
