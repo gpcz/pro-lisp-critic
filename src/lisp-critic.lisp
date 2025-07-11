@@ -36,18 +36,20 @@ OTHER DEALINGS IN THE SOFTWARE.
 (defun critique-file
        (file &optional (names (get-pattern-names)))
   (check-type file (or pathname simple-string))
-  (let ((deviations (deviations:get-deviations-from-file file))
-        (result nil))
-    (with-open-file (in file)
-      (let ((eof (list nil)))
-        (do ((code (read in nil eof) (read in nil eof)))
-            ((eq code eof) (values))
-          (let ((critiques
-                  (critique-definition code deviations file
-                                       :names names)))
-            (when critiques
-              (setf result (append result critiques)))))))
-    result))
+  (check-type names list)
+  (oneret list
+    (let ((deviations (deviations:get-deviations-from-file file))
+          (result nil))
+      (with-open-file (in file)
+        (let ((eof (list nil)))
+          (do ((code (read in nil eof) (read in nil eof)))
+              ((eq code eof) (values))
+            (let ((critiques
+                    (critique-definition code deviations file
+                                         :names names)))
+              (when critiques
+                (setf result (append result critiques)))))))
+      result)))
 
 
 (defun print-critique-responses (critiques

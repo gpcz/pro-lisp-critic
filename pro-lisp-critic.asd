@@ -18,6 +18,7 @@
                (:file "write-wrap")
                (:file "package")
                (:file "specials")
+               (:file "macros")
                (:file "internals")
                (:file "lisp-critic")
                (:file "lisp-rules"))
