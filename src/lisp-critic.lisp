@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun deviation (&key rule construct-type construct-name rationale)
   "Placeholder for recording a Lisp Critic deviation in a file."
+  (declare #.*internal-optimize-settings*)
   (declare (ignore rule construct-type construct-name rationale))
   nil)
 
