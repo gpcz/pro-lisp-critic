@@ -35,6 +35,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun critique-file
        (file &optional (names (get-pattern-names)))
+  "Given pathname or simple-string FILE and list NAMES,
+   return a list of all critique responses from the
+   code in the given file."
   (declare #.*external-optimize-settings*)
   (check-type file (or pathname simple-string))
   (check-type names list)
@@ -54,6 +57,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 (defun print-critique-responses (critiques
                                  &optional (stream *standard-output*))
+  "Given list CRITIQUES and stream STREAM, print all
+   critique responses in the list."
   (declare #.*external-optimize-settings*)
   (check-type critiques list)
   (check-type stream stream)
