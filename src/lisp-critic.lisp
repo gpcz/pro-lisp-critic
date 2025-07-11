@@ -23,7 +23,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 |#
 
 ;;; A Lisp code critiquing package.
-;;; Author: Chris Riesbeck
+;;; Original Author: Chris Riesbeck
+;;; Pro-Lisp-Critic Author: Greg Czerniak
 
 (in-package #:pro-lisp-critic)
 
