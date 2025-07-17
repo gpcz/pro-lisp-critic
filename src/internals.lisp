@@ -42,6 +42,9 @@
     (error "Non-symbolic Lisp pattern name ~S" name))
   `(add-lisp-pattern ',name ',pattern ,format-string ',args))
 
+(declaim (ftype (function (symbol list simple-string list)
+                          (values symbol &optional))
+                add-lisp-pattern))
 (defun add-lisp-pattern (name pat format-string args)
   (declare #.*internal-optimize-settings*)
   (setf (get-pattern name) pat)
