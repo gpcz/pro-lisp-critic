@@ -17,6 +17,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(declaim (ftype (function () (values list &optional)) clear-critique-db))
 (defun clear-critique-db ()
   (declare #.*internal-optimize-settings*)
   (clear-table (get-pattern))
