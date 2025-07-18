@@ -69,11 +69,13 @@
 ;;; CRITIQUE, -DEFINITION, CRITIQUE-FILE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(declaim (ftype (function (list list (or simple-string pathname)
+                                &key (:names list))
+                          (values list &optional))
+                critique-definition))
 (defun critique-definition
       (defn deviations file &key (names (get-pattern-names)))
   (declare #.*internal-optimize-settings*)
-  (check-type defn list)
-  (check-type deviations list)
   (cond ((or (atom defn)
              (and (eql (car defn) 'quote)
                   (or (atom (cadr defn))
