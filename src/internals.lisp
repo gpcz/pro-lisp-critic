@@ -92,6 +92,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(declaim (ftype (function (list list (or simple-string pathname) list)
+                          (values list &optional))
+                generate-critiques))
 (defun generate-critiques (code names file construct)
   (declare #.*internal-optimize-settings*)
   (loop for name of-type symbol in names
