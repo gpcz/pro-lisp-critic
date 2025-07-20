@@ -100,6 +100,9 @@
   (loop for name of-type symbol in names
         append (apply-critique-rule name code file construct)))
 
+(declaim (ftype (function (symbol list (or pathname simple-string) list)
+                          (values list &optional))
+                apply-critique-rule))
 (defun apply-critique-rule (name code file construct)
   (declare #.*internal-optimize-settings*)
   (find-critiques name (get-pattern name) code file construct
