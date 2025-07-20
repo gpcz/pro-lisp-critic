@@ -94,7 +94,7 @@
 
 (defun generate-critiques (code names file construct)
   (declare #.*internal-optimize-settings*)
-  (loop for name in names
+  (loop for name of-type symbol in names
         append (apply-critique-rule name code file construct)))
 
 (defun apply-critique-rule (name code file construct)
