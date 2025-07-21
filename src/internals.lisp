@@ -51,6 +51,8 @@
   (setf (get-response name) (new-response format-string args))
   name)
 
+(declaim (ftype (function () (values list &optional))
+                get-pattern-names))
 (defun get-pattern-names ()
   (declare #.*internal-optimize-settings*)
   (let ((l nil))
