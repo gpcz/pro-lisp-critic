@@ -62,6 +62,8 @@
                (get-pattern))
     (sort l #'string<)))
 
+(declaim (ftype (function (symbol) (values t &optional))
+                remove-lisp-pattern))
 (defun remove-lisp-pattern (name)
   (declare #.*internal-optimize-settings*)
   (remove-key name (get-pattern))
