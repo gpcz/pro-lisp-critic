@@ -315,6 +315,9 @@
          (string-starts-with-p (symbol-name input) substring)
          blists)))
 
+(declaim (ftype (function (simple-string simple-string)
+                          (values boolean &optional))
+                string-starts-with-p))
 (defun string-starts-with-p (str substr)
   (declare #.*internal-optimize-settings*)
   (let ((strlen (length str))
