@@ -519,6 +519,9 @@
         unless (member var lambda-list-keywords)
           collect var))
 
+(declaim (ftype (function ((or atom list))
+                          (values (or atom list) &optional))
+                get-var))
 (defun get-var (var-form)
   (declare #.*internal-optimize-settings*)
   (cond ((atom var-form) var-form)
