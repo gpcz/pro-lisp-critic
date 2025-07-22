@@ -294,6 +294,9 @@
          (string-ends-with (symbol-name input) substring)
          blists)))
 
+(declaim (ftype (function (simple-string simple-string)
+                          (values boolean &optional))
+                string-ends-with))
 (defun string-ends-with (str substr)
   (declare #.*internal-optimize-settings*)
   (let ((strlen (length str))
