@@ -306,6 +306,8 @@
 
 (add-extension '?name-starts-with :single 'match-name-starts-with)
 
+(declaim (ftype (function (list list list) (values boolean &optional))
+                match-name-starts-with))
 (defun match-name-starts-with (args input blists)
   (declare #.*internal-optimize-settings*)
   (destructuring-bind (substring) args
