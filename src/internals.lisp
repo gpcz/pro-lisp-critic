@@ -555,6 +555,8 @@
                    (t (cons (get-var (second tail))
                             (get-loop-vars (cddr tail)))))))))
 
+(declaim (ftype (function (t) (values boolean &optional))
+                loop-binder-p))
 (defun loop-binder-p (x)
   (declare #.*internal-optimize-settings*)
   (and (symbolp x)
