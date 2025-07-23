@@ -512,6 +512,8 @@
       (cond ((null fn) nil)
             (t (funcall fn code))))))
 
+(declaim (ftype (function (list) (values list &optional))
+                get-vars))
 (defun get-vars (vars-list)
   (declare #.*internal-optimize-settings*)
   (loop for var-form in vars-list
