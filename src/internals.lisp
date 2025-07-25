@@ -397,6 +397,8 @@
 (declaim (ftype (function (number) (values simple-string &optional))
                 get-badness-phrase))
 (defun get-badness-phrase (badness)
+  "Given number BADNESS, return a string of how bad the
+   situation is."
   (declare #.*internal-optimize-settings*)
   (cond ((<= badness 1/4) "a little")
         ((<= badness 1/2) "somewhat")
