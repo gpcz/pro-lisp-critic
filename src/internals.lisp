@@ -198,6 +198,8 @@
                 print-separator))
 (defun print-separator (&optional (stream *standard-output*)
                                   (ch #\-))
+  "Given stream STREAM and character CH, print a separator
+   of characters to stream."
   (declare #.*internal-optimize-settings*)
   (format stream "~&~A~%"
     (make-string *output-width* :initial-element ch)))
