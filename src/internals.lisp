@@ -371,8 +371,11 @@
                        (get-badness-phrase badness)
                        blists)))))
 
-
+(declaim (ftype (function (list) (values number &optional))
+                get-length-badness))
 (defun get-length-badness (code)
+  "Given list CODE, return a number of how bad
+   the code length is."
   (declare #.*internal-optimize-settings*)
   (let ((code-length (list-count code)))
     (/ (- code-length *length-threshold*)
