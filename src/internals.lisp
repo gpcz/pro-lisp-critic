@@ -193,7 +193,9 @@
 ;;; but XlispStat 3.50 doesn't handle that and everyone has
 ;;; to run to Steele to see what it does.
 
-
+(declaim (ftype (function (&optional stream character)
+                          (values t &optional))
+                print-separator))
 (defun print-separator (&optional (stream *standard-output*)
                                   (ch #\-))
   (declare #.*internal-optimize-settings*)
