@@ -394,6 +394,8 @@
         (t (+ (list-count (car form))
               (list-count (cdr form))))))
 
+(declaim (ftype (function (number) (values simple-string &optional))
+                get-badness-phrase))
 (defun get-badness-phrase (badness)
   (declare #.*internal-optimize-settings*)
   (cond ((<= badness 1/4) "a little")
