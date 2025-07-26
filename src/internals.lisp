@@ -217,6 +217,9 @@
 
 (add-extension '?contains :single 'match-contains)
 
+;; TODO: Make return value more specific.
+(declaim (ftype (function (list t list) (values t &optional))
+                match-contains))
 (defun match-contains (args input blists)
   (declare #.*internal-optimize-settings*)
   (destructuring-bind (pat) args
@@ -375,7 +378,7 @@
                        (get-badness-phrase badness)
                        blists)))))
 
-(declaim (ftype (function (list) (values number &optional))
+(declaim (ftype (function (list) (values ratio &optional))
                 get-length-badness))
 (defun get-length-badness (code)
   "Given list CODE, return a number of how bad
@@ -401,7 +404,7 @@
         (t (+ (list-count (car form))
               (list-count (cdr form))))))
 
-(declaim (ftype (function (number) (values simple-string &optional))
+(declaim (ftype (function (ratio) (values simple-string &optional))
                 get-badness-phrase))
 (defun get-badness-phrase (badness)
   "Given number BADNESS, return a string of how bad the
