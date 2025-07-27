@@ -397,7 +397,10 @@
                    :initial-value (length form)))))
 |#
 
+(declaim (ftype (function (t) (values fixnum &optional))
+                list-count))
 (defun list-count (form)
+  "Given anytype FORM, return the amount of atoms in the form."
   (declare #.*internal-optimize-settings*)
   (cond ((null form) 0)
         ((atom form) 1)
